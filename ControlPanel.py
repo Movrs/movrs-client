@@ -13,41 +13,44 @@ class ControlPanel(QWidget):
         self.initUI()
 
     def initUI(self):
-        user_data = get_user_info()[0]
-        self.docker_process = ''
+        try:
+            print(get_user_info())
+            user_data = get_user_info()[0]
+            self.docker_process = ''
 
-        self.setWindowTitle("Movrs Client")
-        self.setGeometry(150, 150, 300, 250)
-        self.setStyleSheet("background: #2E2E2E; color: white;")
+            self.setWindowTitle("Movrs Client")
+            self.setGeometry(150, 150, 300, 250)
+            self.setStyleSheet("background: #2E2E2E; color: white;")
 
-        self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)
 
-        layout = QVBoxLayout()
+            layout = QVBoxLayout()
 
-        self.welcome_label = QLabel("Welcome : " + self.get_user_display_name(user_data))
-        self.welcome_label.setFont(QFont("Arial", 14))
-        self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.welcome_label = QLabel("Welcome : " + self.get_user_display_name(user_data))
+            self.welcome_label.setFont(QFont("Arial", 14))
+            self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.version_label = QLabel("Select Version: " + user_data.get('version_id'))
-        self.version_label.setFont(QFont("Arial", 14))
-        self.version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.version_label = QLabel("Select Version: " + user_data.get('version_id'))
+            self.version_label.setFont(QFont("Arial", 14))
+            self.version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.process_button = QPushButton("Start Process")
-        self.process_button.setStyleSheet(self.buttonStyle())
-        self.process_button.clicked.connect(self.toggleProcess)
+            self.process_button = QPushButton("Start Process")
+            self.process_button.setStyleSheet(self.buttonStyle())
+            self.process_button.clicked.connect(self.toggleProcess)
 
-        self.logout_button = QPushButton("Logout")
-        self.logout_button.setStyleSheet(self.buttonStyle())
-        self.logout_button.clicked.connect(self.logout)
+            self.logout_button = QPushButton("Logout")
+            self.logout_button.setStyleSheet(self.buttonStyle())
+            self.logout_button.clicked.connect(self.logout)
 
-        layout.addWidget(self.welcome_label)
-        layout.addWidget(self.version_label)
-        layout.addWidget(self.process_button)
-        layout.addWidget(self.logout_button)
-        self.setLayout(layout)
+            layout.addWidget(self.welcome_label)
+            layout.addWidget(self.version_label)
+            layout.addWidget(self.process_button)
+            layout.addWidget(self.logout_button)
+            self.setLayout(layout)
 
-        self.process_running = False
-
+            self.process_running = False
+        except: 
+            print("something went wrong")
     def toggleProcess(self):
         data = read_json_file()
         state = data.get("state")

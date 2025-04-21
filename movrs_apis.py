@@ -9,7 +9,7 @@ TOKEN_TYPE = ''
 USER_DATA =''
 USER_ID = ''
 BASEURL = 'https://eventmanagement-787937537053.us-central1.run.app'
-BASEURL = 'http://127.0.0.1:6901'
+BASEURL = 'http://0.0.0.0:6901'
 
 def login_user(email, password):
     global USER_EMAIL, ACCESS_TOKEN, TOKEN_TYPE, USER_ID
