@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QTimer
-from movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose
+from movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
 
 
 class ControlPanel(QWidget):
@@ -55,7 +55,7 @@ class ControlPanel(QWidget):
         data = read_json_file()
         state = data.get("state")
         if state == "":
-            self.process_button.setText("Start Process")
+            self.process_button.setText("Stop Process")
             update_json_fields([['state', 'running']])
             self.docker_process = run_docker_compose()
             self.process_running = False
@@ -63,7 +63,9 @@ class ControlPanel(QWidget):
             self.docker_process.terminate()
             self.docker_process = ''
             update_json_fields([['state', '']])
-            self.process_button.setText("Stop Process")
+
+            stop_docker_compose()
+            self.process_button.setText("Start Process")
             self.process_running = True
 
     def get_user_display_name(self, user_data):

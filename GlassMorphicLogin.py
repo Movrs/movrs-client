@@ -53,7 +53,7 @@ class GlassMorphicLogin(QWidget):
         self.login_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.login_btn.clicked.connect(self.login)
         data = read_json_file("user_cred.json")
-        if(data.get("logged_user_id")!=""):
+        if(data.get("logged_user_id") and data.get("logged_user_id")!=""):
             self.login_user(data.get("email"),data.get("password"))
         else:
             layout.addWidget(self.title)

@@ -1,6 +1,6 @@
 import requests
 import json
-
+import os
 import subprocess
 
 USER_EMAIL = ''
@@ -54,6 +54,7 @@ def get_user_info():
     return USER_DATA
 
 def get_user_data(USER_ID):
+    print(USER_ID)
     global USER_DATA
     url = BASEURL+'/users/get-user-data'
     data = {
@@ -62,18 +63,22 @@ def get_user_data(USER_ID):
     response = requests.post(url, json=data)  
     response_data=  response.json()
     USER_DATA =response_data
+    print(USER_DATA)
     return USER_DATA
 
 
 def read_json_file(filepath="current_state.json"):
+    if not os.path.exists(filepath):
+        print(f"File '{filepath}' does not exist. Creating it.")
+        with open(filepath, "w") as f:
+            json.dump({}, f)  # Write default empty JSON
     try:
         with open(filepath, "r") as f:
             data = json.load(f)
             return data
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error reading state file: {e}")
-        return None, None
-    
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from '{filepath}': {e}")
+        return None
 
 def update_json_fields(pairs, filepath="current_state.json"):
     """
@@ -108,7 +113,7 @@ def run_docker_compose(detach=True, filepath="docker-compose.yml"):
         detach (bool): Whether to run in detached mode (`-d`)
         filepath (str): Path to the docker-compose.yml file
     """
-    command = ["docker-compose", "-f", filepath, "up"]
+    command = ["sudo","docker","compose","up"]
     if detach:
         command.append("-d")
 
@@ -122,4 +127,26 @@ def run_docker_compose(detach=True, filepath="docker-compose.yml"):
         return process
     except Exception as e:
         print(f"Failed to start docker-compose: {e}")
+        return None
+    
+
+def stop_docker_compose(filepath="docker-compose.yml"):
+    """
+    Stops docker-compose using the given compose file.
+
+    Args:
+        filepath (str): Path to the docker-compose.yml file
+    """
+    command = ["sudo", "docker", "compose", "down"]
+
+    try:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        print(f"Docker Compose 'down' started with PID {process.pid}")
+        return process
+    except Exception as e:
+        print(f"Failed to stop docker-compose: {e}")
         return None

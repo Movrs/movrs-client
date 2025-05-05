@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "movrs-cloud-platform",
+  "private_key_id": "7e845fa13f2f97c85b4da183d7ce30d6d886168a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/v8Vozgx/DPV5\n08Cy9lZBZLrD3Un0cpdK88/AM5jqi3mIqx7nG+wNhLm+8NKv+ZWd/0JEo++lCPat\nvb85rScgrrYsS0TzOK6WNGZXohw0RRPEmGSuvBBV/dQMR2XoFTEaapqoObEIVy82\nnG3ZU2FBn+Dcy7dIybs7q+jusOCU1WgPSBce/07okWV+DEys97slJMMqUgY8mpHB\ngVtx8ewUihABZwJfNNVVXuKdhlybJHhzctiX2FR6BI1WkpCwklT9SX2usPGVfJNZ\n5um7mWsuLzcpAqOx4gBjFKOaEJPJYYIqq5vR+cPFZ2c3UTglC6iNwYMTEdzQgV0H\nf8X94P1fAgMBAAECggEAHBQ8F03dHJnMNKvikxJprSfQBbCZDNfe+dXcPVwQ73+/\nK1lLrDI1jgE6phBj+esFkt53WM/c3wECBo07vHlzumB7Qt8+2JMbVdmUhw6xLKJU\n87wROllF1yHVdHrcHHFGAIVN4oaYOw1xV4DuwR1pp49/ATY/v8PyzBkvggyaxpB8\np4pvj4OtuF7b8KcyNiqn+fh3KEf+n2FwcNg+O0KOwM6YjhTGRpZkMdVS1jNA1AzC\n8nTfxme7gbtjiX9K+jcDwE3HRdfTyK1cixU7bJkLj3/o2bNP31hUiBX8pjrQ6cD9\n06/ztcSOPcHR1TbJQ+DABmTAjG9PGie1EMFdYDJQwQKBgQDsRjxgRmVbLWkcMaDN\nGPhMTNgTLzR7NrluLgTfNd0oEe79Gqowu0jCln5cuW0aYqzV9cH8b4JjQN/Ah7kG\nekqQuLtTwMzjgdg7txsuMyCxIW2/k0xUvaiVMJM1fkoZZG/+k7BRphD9yJv8SCZn\nuFxeAZHczg08r/Ip1dugqT+gIQKBgQDPwevO6IUc1gDuslCWPgBIY7fPkiUst4Gz\nWMh0I4ThXqANajW6KBsNwFtlmaxKYAK34OZj+q5mIJsENwv/D8ncj2r9odZ174v7\nb2z+/6tuhLNflnRn536yb2QKlApct2zRK1PClwdsN76mvRvBtXr77rrC3Dc9hiSS\n+LSMJdLtfwKBgQCPIGzqlTpI5VVK8vVJyNqAvfwWgv3ztc7WY6In5OU3pMV1JXX7\nVzhYR/n8CYeB+ExiwCDm3lXJ8j6Yzp7SwbnxuTYhIiX7m2h1pBIfBnHDW1C0QHJ4\n0vsQhQBn4zzX7PO675RboZGhaqizRrGdGx05BRJrA5cZMCwuE5Kb3GrigQKBgEtB\n9+WPnQiBDP1qYn7KHtgaJy9txUGZh8Yr1xEa/LuWx2uUmbnBZWtpzrHTJPIcLV/m\nfA6jdCFSllTEi/ftBDZ9TUhrI4C9MXv3NQh6HON/9mod2jT5So/ggeDDF63WU/jB\nNSo8A1hUKR/FSRS2ZMJ2C/kiRHBo8z66EMzjtrCJAoGALM9dEkAGNefM0qA1NGgl\nwfm6UE/1kTQOrIAA03w6yUB7O/kWRY5aNVgvHbWAmG3X701xyCpBp57+ZjfTS42o\nf6RD3pX8AESz7osrHybVhAkCkV0TAFi4EtoRwmjdpARlsV7PRrtq4q8nvjiaIuEs\nh/q82Sh5fdrZlsxB7sTfUE0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "movrs-package-read-only@movrs-cloud-platform.iam.gserviceaccount.com",
+  "client_id": "114937569167081149612",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/movrs-package-read-only%40movrs-cloud-platform.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
