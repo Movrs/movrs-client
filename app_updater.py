@@ -1,8 +1,8 @@
 import json 
-from movrs_apis import get_user_data,read_json_file,BASEURL
+from movrs_apis import get_user_data,read_json_file,BASEURL ,update_json_fields
 import subprocess
 import yaml
-import re
+import os
 import requests
 
 def check_version_to_update():
@@ -127,10 +127,29 @@ def confirm_version_check():
         update_docker_compose_file('docker-compose.yml', docker_images)
         for key, value in docker_images.items():
             pull_image_with_sudo(value)
-        
+        update_json_fields([["current_version",new_version]], "current_state.json")
         print(new_version ,"current_version", current_version)
         return "Version needs to be updated"
+def create_env(user_home):
+    env_file = ".env"
+    # Check if USER_HOME is already set
+    if "USER_HOME" not in os.environ:
+        print(f"USER_HOME not found. Setting it to {user_home}.")
+        os.environ["USER_HOME"] = user_home
 
+        # Append to .env if not already present
+        if not os.path.exists(env_file):
+            with open(env_file, "w") as f:
+                f.write(f"USER_HOME={user_home}\n")
+        else:
+            with open(env_file, "r") as f:
+                lines = f.readlines()
+            if not any(line.startswith("USER_HOME=") for line in lines):
+                with open(env_file, "a") as f:
+                    f.write(f"USER_HOME={user_home}\n")
+        print(f"{user_home} added to environment and .env file.")
+    else:
+        print(f"USER_HOME is already set to {os.environ['USER_HOME']}.")
 
 def update_docker_compose_file(file_path: str, docker_images: dict):
     # Match service name to docker_images key
@@ -144,6 +163,9 @@ def update_docker_compose_file(file_path: str, docker_images: dict):
     # Load existing YAML
     with open(file_path, 'r') as f:
         compose_data = yaml.safe_load(f)
+    home_directory = os.path.expanduser("~")
+    
+    create_env(home_directory)
 
     # Update image tags
     for service, image_key in service_to_image_key.items():

@@ -1,9 +1,10 @@
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton)
 from PyQt6.QtGui import QFont
-from PyQt6.QtCore import Qt, QThread, QObject, pyqtSignal
+from PyQt6.QtCore import Qt, QThread, QObject, pyqtSignal, QTimer
 
 from ControlPanel import ControlPanel
-from movrs_apis import login_user , read_json_file
+from movrs_apis import login_user, read_json_file
+
 
 class LoginWorker(QObject):
     finished = pyqtSignal(bool)
@@ -26,9 +27,10 @@ class GlassMorphicLogin(QWidget):
     def initUI(self):
         self.setWindowTitle("Movrs Package Login")
         self.setGeometry(100, 100, 400, 500)
-        self.setStyleSheet("background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 #1E1E1E, stop:1 #3A3A3A);")
-        
-        layout = QVBoxLayout()
+        self.setStyleSheet(
+            "background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 #1E1E1E, stop:1 #3A3A3A);")
+
+        self.layout = QVBoxLayout()
 
         self.title = QLabel("MOVRS")
         self.title.setFont(QFont("Arial", 18, QFont.Weight.Bold))
@@ -52,18 +54,21 @@ class GlassMorphicLogin(QWidget):
         self.login_btn.setStyleSheet(self.buttonStyle())
         self.login_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.login_btn.clicked.connect(self.login)
-        data = read_json_file("user_cred.json")
-        if(data.get("logged_user_id") and data.get("logged_user_id")!=""):
-            self.login_user(data.get("email"),data.get("password"))
-        else:
-            layout.addWidget(self.title)
-            layout.addWidget(self.username)
-            layout.addWidget(self.password)
-            layout.addWidget(self.error_label)
-            layout.addWidget(self.login_btn)
 
-            self.setLayout(layout)
-        
+        # Add all widgets to layout unconditionally
+        self.layout.addWidget(self.title)
+        self.layout.addWidget(self.username)
+        self.layout.addWidget(self.password)
+        self.layout.addWidget(self.error_label)
+        self.layout.addWidget(self.login_btn)
+
+        self.setLayout(self.layout)
+
+        # Try auto-login
+        data = read_json_file("user_cred.json")
+        if data.get("logged_user_id") and data.get("logged_user_id") != "":
+            # Slight delay to allow UI to show first
+            QTimer.singleShot(100, lambda: self.login_user(data.get("email"), data.get("password")))
 
     def inputStyle(self):
         return (
@@ -88,12 +93,13 @@ class GlassMorphicLogin(QWidget):
     def login(self):
         self.login_user(self.username.text(), self.password.text())
 
-    def login_user(self, email,password):
+    def login_user(self, email, password):
         self.login_btn.setEnabled(False)
-        self.error_label.setText("Logging in...")
+        self.error_label.setText("Logging in user please wait...")
+        QApplication.processEvents()  # Ensure UI updates before thread starts
 
         self.thread = QThread()
-        self.worker = LoginWorker(email,password)
+        self.worker = LoginWorker(email, password)
         self.worker.moveToThread(self.thread)
 
         self.thread.started.connect(self.worker.run)
@@ -104,14 +110,13 @@ class GlassMorphicLogin(QWidget):
 
         self.thread.start()
 
-
     def on_login_finished(self, success):
         self.login_btn.setEnabled(True)
 
         if success:
             self.error_label.setText("")
             self.hide()
-            self.control_panel = ControlPanel(self )
+            self.control_panel = ControlPanel(self)
             self.control_panel.show()
         else:
             self.error_label.setText("Invalid email or password.")

@@ -1,3 +1,4 @@
 {
-    "state": ""
+    "state": "running",
+    "current_version": "movrs_package_version-0.0.2"
 }

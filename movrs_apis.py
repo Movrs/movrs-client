@@ -130,23 +130,32 @@ def run_docker_compose(detach=True, filepath="docker-compose.yml"):
         return None
     
 
+
 def stop_docker_compose(filepath="docker-compose.yml"):
     """
-    Stops docker-compose using the given compose file.
+    Stops docker-compose using the given compose file and performs additional system tasks.
 
     Args:
         filepath (str): Path to the docker-compose.yml file
     """
-    command = ["sudo", "docker", "compose", "down"]
+    commands = [
+        ["sudo", "aa-remove-unknown"],
+        ["sudo", "systemctl", "restart", "docker"],
+        ["sudo", "docker", "compose", "-f", filepath, "down"]
+    ]
 
-    try:
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        print(f"Docker Compose 'down' started with PID {process.pid}")
-        return process
-    except Exception as e:
-        print(f"Failed to stop docker-compose: {e}")
-        return None
+    for cmd in commands:
+        try:
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            stdout, stderr = process.communicate()
+            print(f"Command {' '.join(cmd)} completed with return code {process.returncode}")
+            if stdout:
+                print(stdout.decode())
+            if stderr:
+                print(stderr.decode())
+        except Exception as e:
+            print(f"Failed to run command {' '.join(cmd)}: {e}")

@@ -8,8 +8,8 @@ services:
     - DISPLAY=${DISPLAY}
     volumes:
     - /home:/home
-    - ${HOME_DIR}/.config/theCaptury:/root/.config/theCaptury
-    - ${HOME_DIR}/.local/share/Captury:/root/.local/share/Captury
+    - ${USER_HOME}/.config/theCaptury:/root/.config/theCaptury
+    - ${USER_HOME}/.local/share/Captury:/root/.local/share/Captury
     network_mode: host
     deploy:
       resources:
