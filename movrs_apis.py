@@ -2,6 +2,9 @@ import requests
 import json
 import os
 import subprocess
+import yaml 
+
+
 
 USER_EMAIL = ''
 ACCESS_TOKEN = ''
@@ -9,7 +12,7 @@ TOKEN_TYPE = ''
 USER_DATA =''
 USER_ID = ''
 BASEURL = 'https://eventmanagement-787937537053.us-central1.run.app'
-BASEURL = 'http://0.0.0.0:6901'
+# BASEURL = 'http://0.0.0.0:6901'
 
 def login_user(email, password):
     global USER_EMAIL, ACCESS_TOKEN, TOKEN_TYPE, USER_ID
@@ -103,7 +106,24 @@ def update_json_fields(pairs, filepath="current_state.json"):
         print(f"Error updating JSON file: {e}")
         return False
     
+def get_images_from_compose(file_path="docker-compose.yml"):
+    with open(file_path, 'r') as f:
+        compose_data = yaml.safe_load(f)
 
+    services = compose_data.get("services", {})
+    images = []
+    for service in services.values():
+        image = service.get("image")
+        if image:
+            images.append(image)
+    return images
+
+def image_exists_locally(image_name):
+    result = subprocess.run(["docker", "images", "-q", image_name], capture_output=True, text=True)
+    return result.stdout.strip() != ""
+def run_missing_handler_script(script_path="app_updater.py"):
+    print("Some Docker images are missing. Running download script...")
+    subprocess.run(["python3", script_path])
 
 def run_docker_compose(detach=True, filepath="docker-compose.yml"):
     """
@@ -113,6 +133,20 @@ def run_docker_compose(detach=True, filepath="docker-compose.yml"):
         detach (bool): Whether to run in detached mode (`-d`)
         filepath (str): Path to the docker-compose.yml file
     """
+    try:
+        images = get_images_from_compose()
+    except FileNotFoundError:
+        print("docker-compose.yml not found.")
+        return
+
+    missing_images = [img for img in images if not image_exists_locally(img)]
+
+    if missing_images:
+        print("Missing images:", missing_images)
+        run_missing_handler_script()
+    else:
+        print("All Docker images are available locally.")
+
     command = ["sudo","docker","compose","up"]
     if detach:
         command.append("-d")
