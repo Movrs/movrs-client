@@ -124,7 +124,7 @@ def confirm_version_check():
 
         json_key_path = "movrs-read.json"
         authenticate_docker_with_service_account(json_key_path)
-        update_docker_compose_file('docker-compose.yml', docker_images)
+        update_docker_compose_file('movrs_client/docker-compose.yml', docker_images)
         for key, value in docker_images.items():
             pull_image_with_sudo(value)
         update_json_fields([["current_version",new_version]], "current_state.json")

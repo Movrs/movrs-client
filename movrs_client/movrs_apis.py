@@ -109,7 +109,7 @@ def update_json_fields(pairs, filepath="current_state.json"):
         print(f"Error updating JSON file: {e}")
         return False
     
-def get_images_from_compose(file_path="docker-compose.yml"):
+def get_images_from_compose(file_path="movrs_client/docker-compose.yml"):
     with open(file_path, 'r') as f:
         compose_data = yaml.safe_load(f)
 
@@ -124,11 +124,11 @@ def get_images_from_compose(file_path="docker-compose.yml"):
 def image_exists_locally(image_name):
     result = subprocess.run(["docker", "images", "-q", image_name], capture_output=True, text=True)
     return result.stdout.strip() != ""
-def run_missing_handler_script(script_path="app_updater.py"):
+def run_missing_handler_script(script_path="movrs_client/app_updater.py"):
     print("Some Docker images are missing. Running download script...")
     subprocess.run(["python3", script_path])
 
-def run_docker_compose(detach=True, filepath="docker-compose.yml"):
+def run_docker_compose(detach=True, filepath="movrs_client/docker-compose.yml"):
     """
     Runs docker-compose in a separate process.
 
@@ -168,7 +168,7 @@ def run_docker_compose(detach=True, filepath="docker-compose.yml"):
     
 
 
-def stop_docker_compose(filepath="docker-compose.yml"):
+def stop_docker_compose(filepath="movrs_client/docker-compose.yml"):
     """
     Stops docker-compose using the given compose file and performs additional system tasks.
 

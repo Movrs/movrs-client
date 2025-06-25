@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="movrs-client",
-    version="0.1.1",
+    version="0.1.3s",
     description="MOVRS Client GUI and CLI",
     author="Tariq Sarfaraz",
     packages=find_packages(),
