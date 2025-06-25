@@ -8,6 +8,7 @@ import os
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+print("BASE DIR", BASE_DIR)
 
 class ControlPanel(QWidget):
     def __init__(self, login_window):

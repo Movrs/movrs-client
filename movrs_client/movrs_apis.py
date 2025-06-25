@@ -114,7 +114,7 @@ def update_json_fields(pairs, filepath="current_state.json"):
     
 def get_images_from_compose(file_path=None):
     if file_path is None or file_path == "movrs_client/docker-compose.yml":
-        file_path = os.path.join(BASE_DIR, "docker-compose.yml")
+        file_path = os.path.join(BASE_DIR, "movrs_client/docker-compose.yml")
     elif not os.path.isabs(file_path):
         file_path = os.path.join(BASE_DIR, file_path)
     with open(file_path, 'r') as f:
@@ -141,7 +141,7 @@ def run_missing_handler_script(script_path=None):
 
 def run_docker_compose(detach=True, filepath=None):
     if filepath is None or filepath == "movrs_client/docker-compose.yml":
-        filepath = os.path.join(BASE_DIR, "docker-compose.yml")
+        filepath = os.path.join(BASE_DIR, "movrs_client/docker-compose.yml")
     elif not os.path.isabs(filepath):
         filepath = os.path.join(BASE_DIR, filepath)
     try:
@@ -178,7 +178,7 @@ def run_docker_compose(detach=True, filepath=None):
 
 def stop_docker_compose(filepath=None):
     if filepath is None or filepath == "movrs_client/docker-compose.yml":
-        filepath = os.path.join(BASE_DIR, "docker-compose.yml")
+        filepath = os.path.join(BASE_DIR, "movrs_client/docker-compose.yml")
     elif not os.path.isabs(filepath):
         filepath = os.path.join(BASE_DIR, filepath)
     commands = [
