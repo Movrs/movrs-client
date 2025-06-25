@@ -4,7 +4,10 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QTimer
 from movrs_client.movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
+import os
 
+# Determine the base directory of the installed package
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class ControlPanel(QWidget):
     def __init__(self, login_window):
@@ -76,7 +79,7 @@ class ControlPanel(QWidget):
 
     def logout(self):
         update_json_fields([['state', '']])
-        update_json_fields([['logged_user_id', ''], ['email', ''], ['password', '']], "user_cred.json")
+        update_json_fields([['logged_user_id', ''], ['email', ''], ['password', '']], os.path.join(BASE_DIR, "user_cred.json"))
         if self.docker_process:
             self.docker_process.terminate()
         self.docker_process = ''

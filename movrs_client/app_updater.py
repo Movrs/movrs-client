@@ -5,8 +5,11 @@ import yaml
 import os
 import requests
 
+# Determine the base directory of the installed package
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def check_version_to_update():
-    data = read_json_file("user_cred.json")
+    data = read_json_file(os.path.join(BASE_DIR, "user_cred.json"))
     user_data = get_user_data(data.get("logged_user_id"))[0]
     return user_data["version_id"]
 
@@ -103,7 +106,7 @@ def get_version_details():
     print(response_data)
 
 def confirm_version_check():
-    data = read_json_file("current_state.json")
+    data = read_json_file(os.path.join(BASE_DIR, "current_state.json"))
     current_version = data.get("current_version")
     new_version = check_version_to_update()
     if(new_version == current_version):
@@ -124,10 +127,10 @@ def confirm_version_check():
 
         json_key_path = "movrs-read.json"
         authenticate_docker_with_service_account(json_key_path)
-        update_docker_compose_file('movrs_client/docker-compose.yml', docker_images)
+        update_docker_compose_file(os.path.join(BASE_DIR, 'docker-compose.yml'), docker_images)
         for key, value in docker_images.items():
             pull_image_with_sudo(value)
-        update_json_fields([["current_version",new_version]], "current_state.json")
+        update_json_fields([["current_version",new_version]], os.path.join(BASE_DIR, "current_state.json"))
         print(new_version ,"current_version", current_version)
         return "Version needs to be updated"
 def create_env(user_home):
