@@ -74,7 +74,10 @@ def read_json_file(filepath="current_state.json"):
     if not os.path.exists(filepath):
         print(f"File '{filepath}' does not exist. Creating it.")
         with open(filepath, "w") as f:
-            json.dump({}, f)  # Write default empty JSON
+            if(filepath=="current_state.json"):
+                json.dump({"state": "running"}, f)
+            else:
+                json.dump({}, f)
     try:
         with open(filepath, "r") as f:
             data = json.load(f)
