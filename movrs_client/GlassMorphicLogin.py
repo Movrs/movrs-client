@@ -2,8 +2,8 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEd
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QThread, QObject, pyqtSignal, QTimer
 
-from ControlPanel import ControlPanel
-from movrs_apis import login_user, read_json_file
+from movrs_client.ControlPanel import ControlPanel
+from movrs_client.movrs_apis import login_user, read_json_file
 
 
 class LoginWorker(QObject):

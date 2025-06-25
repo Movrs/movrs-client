@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QTimer
-from movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
+from movrs_client.movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
 
 
 class ControlPanel(QWidget):

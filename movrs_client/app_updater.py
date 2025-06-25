@@ -1,5 +1,5 @@
 import json 
-from movrs_apis import get_user_data,read_json_file,BASEURL ,update_json_fields
+from movrs_client.movrs_apis import get_user_data,read_json_file,BASEURL ,update_json_fields
 import subprocess
 import yaml
 import os
