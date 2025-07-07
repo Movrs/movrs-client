@@ -156,6 +156,7 @@ def run_docker_compose(detach=True, filepath=None):
     if missing_images:
         print("Missing images:", missing_images)
         run_missing_handler_script()
+        return
     else:
         print("All Docker images are available locally.")
 

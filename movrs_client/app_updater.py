@@ -1,5 +1,5 @@
 import json 
-from movrs_client.movrs_apis import get_user_data,read_json_file,BASEURL ,update_json_fields
+from movrs_client.movrs_apis import get_user_data,read_json_file,BASEURL ,update_json_fields, run_docker_compose
 import subprocess
 import yaml
 import os
@@ -132,6 +132,7 @@ def confirm_version_check():
         for key, value in docker_images.items():
             pull_image_with_sudo(value)
         update_json_fields([["current_version",new_version]], os.path.join(BASE_DIR, "current_state.json"))
+        run_docker_compose()
         print(new_version ,"current_version", current_version)
         return "Version needs to be updated"
 def create_env(user_home):
