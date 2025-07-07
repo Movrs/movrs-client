@@ -160,18 +160,23 @@ def run_docker_compose(detach=True, filepath=None):
     else:
         print("All Docker images are available locally.")
 
-    command = ["sudo","docker","compose","up"]
+    command = ["sudo", "docker", "compose", "up"]
     if detach:
         command.append("-d")
 
     try:
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        print(f"Docker Compose started with PID {process.pid}")
-        return process
+        # Open log files
+        stdout_log_path = os.path.join(BASE_DIR, "docker-compose.stdout.log")
+        stderr_log_path = os.path.join(BASE_DIR, "docker-compose.stderr.log")
+        
+        with open(stdout_log_path, 'wb') as stdout_log, open(stderr_log_path, 'wb') as stderr_log:
+            process = subprocess.Popen(
+                command,
+                stdout=stdout_log,
+                stderr=stderr_log
+            )
+            print(f"Docker Compose started with PID {process.pid}")
+            return process
     except Exception as e:
         print(f"Failed to start docker-compose: {e}")
         return None
