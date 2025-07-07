@@ -3,7 +3,7 @@ import os
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_NAME = "movrs.service"
+SERVICE_NAME = "movrs.command"
 SERVICE_FILE_PATH = os.path.join("/etc/systemd/system", SERVICE_NAME)
 
 import subprocess
@@ -12,7 +12,7 @@ import shutil
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_NAME = "movrs.service"
+SERVICE_NAME = "movrs.command"
 SERVICE_FILE_PATH = os.path.join("/etc/systemd/system", SERVICE_NAME)
 
 def create_service_file():
