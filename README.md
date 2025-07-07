@@ -4,22 +4,35 @@ A GUI and CLI client for MOVRS.
 
 ## Installation
 
-You can install this package directly from the public GitHub repository:
+**All commands listed below must be run with `sudo` privileges.**
+
+### 1. Install Python on Ubuntu 22.04
+
+First, update your package list and install Python 3 and pip:
 
 ```bash
-pip install git+https://github.com/Movrs/movrs-client.git
+sudo apt-get update
+sudo apt-get install -y python3 python3-pip
+```
+
+### 2. Install the movrs-client package
+
+You can install this package directly from the public GitHub repository using pip:
+
+```bash
+sudo pip install git+https://github.com/Movrs/movrs-client.git
 ```
 
 Alternatively, if you have already cloned the repository locally:
 
 ```bash
-pip install .
+sudo pip install .
 ```
 
 ## Usage
 
-```bash
-movrs-client
-```
+To launch the MOVRS GUI application, run the following command with `sudo`:
 
-This will launch the MOVRS GUI application. 
+```bash
+sudo movrs-client
+```
