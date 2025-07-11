@@ -181,7 +181,4 @@ def update_docker_compose_file(file_path: str, docker_images: dict):
     with open(file_path, 'w') as f:
         yaml.dump(compose_data, f, sort_keys=False)
 
-
 print(confirm_version_check())
-
-
