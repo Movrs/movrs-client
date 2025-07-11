@@ -4,6 +4,7 @@ import subprocess
 import yaml
 import os
 import requests
+import shutil
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,16 +33,41 @@ def is_docker_installed_with_sudo():
         print("Docker command failed with sudo:", e.stderr.strip())
         return False
 
+def find_gcloud():
+    # 1. Check PATH
+    gcloud_path = shutil.which("gcloud")
+    if gcloud_path:
+        return gcloud_path
+
+    # 2. Check common locations
+    common_paths = [
+        "/usr/local/google/cloud/sdk/bin/gcloud",
+        os.path.expanduser("~/google-cloud-sdk/bin/gcloud"),
+        "/snap/bin/gcloud",
+        "/usr/bin/gcloud",
+        "/usr/local/bin/gcloud"
+    ]
+    for path in common_paths:
+        if os.path.exists(path):
+            return path
+            
+    return None
 
 def authenticate_docker_with_service_account(json_key_path):
+    gcloud_executable = find_gcloud()
+    if not gcloud_executable:
+        print("❌ 'gcloud' command not found.")
+        print("Please install the Google Cloud SDK and ensure 'gcloud' is in your PATH or in a standard location.")
+        print("Installation instructions: https://cloud.google.com/sdk/docs/install")
+        raise FileNotFoundError("'gcloud' command not found. Please install the Google Cloud SDK.")
     try:
         print("🔐 Authenticating Docker with service account...")
         subprocess.run(
-            ["gcloud", "auth", "activate-service-account", "--key-file", json_key_path],
+            [gcloud_executable, "auth", "activate-service-account", "--key-file", json_key_path],
             check=True
         )
         subprocess.run(
-            ["gcloud", "auth", "configure-docker"],
+            [gcloud_executable, "auth", "configure-docker"],
             check=True
         )
         print("✅ Docker configured for authentication.")
