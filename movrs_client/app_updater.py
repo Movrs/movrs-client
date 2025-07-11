@@ -14,10 +14,6 @@ def check_version_to_update():
     user_data = get_user_data(data.get("logged_user_id"))[0]
     return user_data["version_id"]
 
-
-
-
-
 def is_docker_installed_with_sudo():
     try:
         result = subprocess.run(
@@ -126,7 +122,7 @@ def confirm_version_check():
         if not result:
             install_docker()
 
-        json_key_path = "movrs-read.json"
+        json_key_path = os.path.join(BASE_DIR, "movrs-read.json")
         authenticate_docker_with_service_account(json_key_path)
         update_docker_compose_file(os.path.join(BASE_DIR, 'docker-compose.yml'), docker_images)
         for key, value in docker_images.items():
