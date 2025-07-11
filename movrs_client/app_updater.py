@@ -123,6 +123,7 @@ def confirm_version_check():
             install_docker()
 
         json_key_path = os.path.join(BASE_DIR, "movrs-read.json")
+        print("JSON KEY Present: ", json_key_path)
         authenticate_docker_with_service_account(json_key_path)
         update_docker_compose_file(os.path.join(BASE_DIR, 'docker-compose.yml'), docker_images)
         for key, value in docker_images.items():
