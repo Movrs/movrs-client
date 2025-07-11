@@ -36,6 +36,7 @@ def is_docker_installed_with_sudo():
 def find_gcloud():
     # 1. Check PATH
     gcloud_path = shutil.which("gcloud")
+    print("GCLOUD Path: ", gcloud_path)
     if gcloud_path:
         return gcloud_path
 
