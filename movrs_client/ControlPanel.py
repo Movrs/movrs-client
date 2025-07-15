@@ -65,7 +65,6 @@ class ControlPanel(QWidget):
             self.docker_process = run_docker_compose()
             create_service_file()
             enable_service()
-            start_service()
             self.process_running = False
         else:
             stop_service()
