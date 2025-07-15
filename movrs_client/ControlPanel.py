@@ -61,8 +61,8 @@ class ControlPanel(QWidget):
         state = data.get("state")
         if state == "":
             self.process_button.setText("Stop Process")
-            update_json_fields([['state', 'running']])
             self.docker_process = run_docker_compose()
+            update_json_fields([['state', 'running']])
             create_service_file()
             enable_service()
             self.process_running = False
