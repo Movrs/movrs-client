@@ -68,7 +68,7 @@ def authenticate_docker_with_service_account(json_key_path):
             check=True
         )
         subprocess.run(
-            [gcloud_executable, "auth", "configure-docker"],
+            [gcloud_executable, "auth", "configure-docker", "us-central1-docker.pkg.dev"],
             check=True
         )
         print("✅ Docker configured for authentication.")
@@ -155,8 +155,8 @@ def confirm_version_check():
         update_docker_compose_file(os.path.join(BASE_DIR, 'docker-compose.yml'), docker_images)
         for key, value in docker_images.items():
             pull_image_with_sudo(value)
-        update_json_fields([["current_version",new_version]], os.path.join(BASE_DIR, "current_state.json"))
         run_docker_compose()
+        update_json_fields([["current_version",new_version]], os.path.join(BASE_DIR, "current_state.json"))
         print(new_version ,"current_version", current_version)
         return "Version needs to be updated"
 def create_env(user_home):
