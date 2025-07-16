@@ -22,8 +22,6 @@ services:
     stdin_open: true
     tty: true
     entrypoint: /bin/bash -c "python3 app.py"
-    ports:
-    - 13999:13999
   frontend:
     image: us-central1-docker.pkg.dev/movrs-cloud-platform/movrs-core/movrs_ui_base:0.0.1
     container_name: movrs_ui_base
@@ -34,9 +32,6 @@ services:
     - /home:/home
     - ${USER_HOME}/.config/theCaptury:/root/.config/theCaptury
     - ${USER_HOME}/.local/share/Captury:/root/.local/share/Captury
-    ports:
-    - 13999:13999
-    - 6999:6999
   magic_motion:
     image: us-central1-docker.pkg.dev/movrs-cloud-platform/movrs-core/magic_motion_base:latest
     container_name: movrs_magic_motion_app

@@ -23,8 +23,8 @@ After=network.target
 User=root
 Group=root
 Type=forking
-ExecStart={docker_path} compose -f {docker_compose_path} up -d
-ExecStop={docker_path} compose -f {docker_compose_path} down
+ExecStart=sudo docker-compose -f {docker_compose_path} up -d
+ExecStop=sudo docker-compose -f {docker_compose_path} down
 Restart=always
 
 [Install]
