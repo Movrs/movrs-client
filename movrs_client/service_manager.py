@@ -22,6 +22,8 @@ After=network.target
 [Service]
 User=root
 Group=root
+Environment="DISPLAY=:0"
+Environment="QT_QPA_PLATFORM=xcb"
 Type=forking
 ExecStart=sudo docker-compose -f {docker_compose_path} up -d
 ExecStop=sudo docker-compose -f {docker_compose_path} down
