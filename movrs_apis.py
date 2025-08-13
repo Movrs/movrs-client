@@ -19,7 +19,8 @@ def login_user(email, password):
     url = BASEURL + '/auth/login'
     data = {
         'email': email,
-        'password': password
+        'password': password,
+        "app_name":"movrs-client"
     }
 
     try:
@@ -28,16 +29,16 @@ def login_user(email, password):
 
         response_data = response.json()
         print("Login response:", response.text)
-
         if not response_data or 'access_token' not in response_data:
             print("Login failed: No access token in response.")
             return False
+        api_key_data =response_data.get('api_key')
 
         USER_EMAIL = email
         ACCESS_TOKEN = response_data.get('access_token')
         TOKEN_TYPE = response_data.get('token_type')
         USER_ID = response_data.get('user_id')
-
+        update_or_create_json("movrs-read.json", api_key_data)
         print(f"Login successful. User ID: {USER_ID}")
         update_json_fields([['logged_user_id',USER_ID],['email',USER_EMAIL],['password',password]], "user_cred.json")
         get_user_data(USER_ID)
@@ -51,6 +52,31 @@ def login_user(email, password):
         print(f"An unexpected error occurred: {err}")
 
     return False
+
+
+def update_or_create_json(file_path: str, new_data: dict):
+    """
+    Create or update a JSON file with new dictionary data.
+    If the file exists, merge keys (overwriting duplicates).
+    """
+    # Load existing data if file exists
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = {}  # If file is empty or invalid JSON
+    else:
+        data = {}
+
+    # Merge the new data
+    data.update(new_data)
+
+    # Save the updated data
+    with open(file_path, "w") as f:
+        json.dump(data, f, indent=4)
+
+    return data
 
 
 def get_user_info():
