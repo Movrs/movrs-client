@@ -1,0 +1,6 @@
+movrs_client==0.1.0
+PyQt6==6.9.1
+pyqt6_sip==13.10.2
+PyYAML==6.0.2
+PyYAML==6.0.2
+Requests==2.32.4

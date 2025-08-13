@@ -1,0 +1,2 @@
+include movrs_client/docker-compose.yml
+include movrs_client/*.json

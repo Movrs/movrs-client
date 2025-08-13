@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import yaml 
+import sys
 
 
 
@@ -13,6 +14,9 @@ USER_DATA =''
 USER_ID = ''
 BASEURL = 'https://eventmanagement-787937537053.us-central1.run.app'
 # BASEURL = 'http://0.0.0.0:6901'
+
+# Determine the base directory of the installed package
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def login_user(email, password):
     global USER_EMAIL, ACCESS_TOKEN, TOKEN_TYPE, USER_ID
@@ -97,11 +101,14 @@ def get_user_data(USER_ID):
 
 
 def read_json_file(filepath="current_state.json"):
+    # Use absolute path for known files
+    if filepath in ("current_state.json", "user_cred.json"):
+        filepath = os.path.join(BASE_DIR, filepath)
     if not os.path.exists(filepath):
         print(f"File '{filepath}' does not exist. Creating it.")
         with open(filepath, "w") as f:
-            if(filepath=="current_state.json"):
-                json.dump({"state": ""}, f)
+            if(os.path.basename(filepath)=="current_state.json"):
+                json.dump({"state": "running"}, f)
             else:
                 json.dump({}, f)
     try:
@@ -113,13 +120,9 @@ def read_json_file(filepath="current_state.json"):
         return None
 
 def update_json_fields(pairs, filepath="current_state.json"):
-    """
-    Update multiple key-value pairs in a JSON file.
-    
-    Args:
-        pairs: 2D array like [['state', 'running'], ['version', '1.0.3']]
-        filepath: Path to the JSON file
-    """
+    # Use absolute path for known files
+    if filepath in ("current_state.json", "user_cred.json"):
+        filepath = os.path.join(BASE_DIR, filepath)
     try:
         with open(filepath, "r") as f:
             data = json.load(f)
@@ -135,7 +138,11 @@ def update_json_fields(pairs, filepath="current_state.json"):
         print(f"Error updating JSON file: {e}")
         return False
     
-def get_images_from_compose(file_path="docker-compose.yml"):
+def get_images_from_compose(file_path=None):
+    if file_path is None or file_path == "docker-compose.yml":
+        file_path = os.path.join(BASE_DIR, "docker-compose.yml")
+    elif not os.path.isabs(file_path):
+        file_path = os.path.join(BASE_DIR, file_path)
     with open(file_path, 'r') as f:
         compose_data = yaml.safe_load(f)
 
@@ -150,20 +157,22 @@ def get_images_from_compose(file_path="docker-compose.yml"):
 def image_exists_locally(image_name):
     result = subprocess.run(["docker", "images", "-q", image_name], capture_output=True, text=True)
     return result.stdout.strip() != ""
-def run_missing_handler_script(script_path="app_updater.py"):
+def run_missing_handler_script(script_path=None):
+    if script_path is None or script_path == "movrs_client/app_updater.py":
+        script_path = os.path.join(BASE_DIR, "app_updater.py")
+    elif not os.path.isabs(script_path):
+        script_path = os.path.join(BASE_DIR, script_path)
     print("Some Docker images are missing. Running download script...")
-    subprocess.run(["python3", script_path])
+    subprocess.run([sys.executable, script_path])
 
-def run_docker_compose(detach=True, filepath="docker-compose.yml"):
-    """
-    Runs docker-compose in a separate process.
-
-    Args:
-        detach (bool): Whether to run in detached mode (`-d`)
-        filepath (str): Path to the docker-compose.yml file
-    """
+def run_docker_compose(detach=True, filepath=None):
+    if filepath is None or filepath == "docker-compose.yml":
+        filepath = os.path.join(BASE_DIR, "docker-compose.yml")
+    elif not os.path.isabs(filepath):
+        filepath = os.path.join(BASE_DIR, filepath)
     try:
-        images = get_images_from_compose()
+        print("File Path", filepath)
+        images = get_images_from_compose(filepath)
     except FileNotFoundError:
         print("docker-compose.yml not found.")
         return
@@ -173,34 +182,38 @@ def run_docker_compose(detach=True, filepath="docker-compose.yml"):
     if missing_images:
         print("Missing images:", missing_images)
         run_missing_handler_script()
+        return
     else:
         print("All Docker images are available locally.")
 
-    command = ["sudo","docker","compose","up"]
+    command = ["sudo", "docker", "compose", "-f", filepath, "up"]
     if detach:
         command.append("-d")
 
     try:
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        print(f"Docker Compose started with PID {process.pid}")
-        return process
+        # Open log files
+        stdout_log_path = os.path.join(BASE_DIR, "docker-compose.stdout.log")
+        stderr_log_path = os.path.join(BASE_DIR, "docker-compose.stderr.log")
+        
+        with open(stdout_log_path, 'wb') as stdout_log, open(stderr_log_path, 'wb') as stderr_log:
+            process = subprocess.Popen(
+                command,
+                stdout=stdout_log,
+                stderr=stderr_log
+            )
+            print(f"Docker Compose started with PID {process.pid}")
+            return process
     except Exception as e:
         print(f"Failed to start docker-compose: {e}")
         return None
     
 
 
-def stop_docker_compose(filepath="docker-compose.yml"):
-    """
-    Stops docker-compose using the given compose file and performs additional system tasks.
-
-    Args:
-        filepath (str): Path to the docker-compose.yml file
-    """
+def stop_docker_compose(filepath=None):
+    if filepath is None or filepath == "docker-compose.yml":
+        filepath = os.path.join(BASE_DIR, "docker-compose.yml")
+    elif not os.path.isabs(filepath):
+        filepath = os.path.join(BASE_DIR, filepath)
     commands = [
         ["sudo", "aa-remove-unknown"],
         ["sudo", "systemctl", "restart", "docker"],

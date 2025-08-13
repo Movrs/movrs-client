@@ -3,8 +3,13 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QTimer
-from movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
+from movrs_client.movrs_apis import get_user_info, read_json_file, update_json_fields
+from movrs_client.service_manager import create_service_file, enable_service, start_service, stop_service, disable_service
+import os
 
+# Determine the base directory of the installed package
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+print("BASE DIR", BASE_DIR)
 
 class ControlPanel(QWidget):
     def __init__(self, login_window):
@@ -57,14 +62,13 @@ class ControlPanel(QWidget):
         if state == "":
             self.process_button.setText("Stop Process")
             update_json_fields([['state', 'running']])
-            self.docker_process = run_docker_compose()
+            create_service_file()
+            enable_service()
+            start_service()
             self.process_running = False
         else:
-            self.docker_process.terminate()
-            self.docker_process = ''
+            stop_service()
             update_json_fields([['state', '']])
-
-            stop_docker_compose()
             self.process_button.setText("Start Process")
             self.process_running = True
 
@@ -76,7 +80,7 @@ class ControlPanel(QWidget):
 
     def logout(self):
         update_json_fields([['state', '']])
-        update_json_fields([['logged_user_id', ''], ['email', ''], ['password', '']], "user_cred.json")
+        update_json_fields([['logged_user_id', ''], ['email', ''], ['password', '']], os.path.join(BASE_DIR, "user_cred.json"))
         if self.docker_process:
             self.docker_process.terminate()
         self.docker_process = ''
@@ -92,3 +96,4 @@ class ControlPanel(QWidget):
             "font-size: 16px;"
             "border: 1px solid rgba(255, 255, 255, 0.5);"
         )
+

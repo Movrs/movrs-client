@@ -1,10 +1,13 @@
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton)
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QThread, QObject, pyqtSignal, QTimer
+import os
 
-from ControlPanel import ControlPanel
-from movrs_apis import login_user, read_json_file
+from movrs_client.ControlPanel import ControlPanel
+from movrs_client.movrs_apis import login_user, read_json_file
 
+# Determine the base directory of the installed package
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class LoginWorker(QObject):
     finished = pyqtSignal(bool)
@@ -65,7 +68,7 @@ class GlassMorphicLogin(QWidget):
         self.setLayout(self.layout)
 
         # Try auto-login
-        data = read_json_file("user_cred.json")
+        data = read_json_file(os.path.join(BASE_DIR, "user_cred.json"))
         if data.get("logged_user_id") and data.get("logged_user_id") != "":
             # Slight delay to allow UI to show first
             QTimer.singleShot(100, lambda: self.login_user(data.get("email"), data.get("password")))
