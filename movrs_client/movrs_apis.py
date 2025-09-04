@@ -185,7 +185,7 @@ def run_docker_compose(detach=True, filepath=None):
     else:
         print("All Docker images are available locally.")
 
-    command = ["sudo", "docker", "compose", "-f", filepath, "up"]
+    command = ["sudo", "docker-compose", "-f", filepath, "up"]
     if detach:
         command.append("-d")
 
@@ -216,7 +216,7 @@ def stop_docker_compose(filepath=None):
     commands = [
         ["sudo", "aa-remove-unknown"],
         ["sudo", "systemctl", "restart", "docker"],
-        ["sudo", "docker", "compose", "-f", filepath, "down"]
+        ["sudo", "docker-compose", "-f", filepath, "down"]
     ]
 
     for cmd in commands:

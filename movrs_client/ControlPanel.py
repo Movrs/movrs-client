@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QTimer
-from movrs_client.movrs_apis import get_user_info, read_json_file, update_json_fields
+from movrs_client.movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
 from movrs_client.service_manager import create_service_file, enable_service, start_service, stop_service, disable_service
 import os
 
@@ -61,10 +61,10 @@ class ControlPanel(QWidget):
         state = data.get("state")
         if state == "":
             self.process_button.setText("Stop Process")
+            self.docker_process = run_docker_compose()
             update_json_fields([['state', 'running']])
             create_service_file()
             enable_service()
-            start_service()
             self.process_running = False
         else:
             stop_service()

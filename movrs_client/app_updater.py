@@ -4,6 +4,7 @@ import subprocess
 import yaml
 import os
 import requests
+import shutil
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,10 +14,6 @@ def check_version_to_update():
     data = read_json_file(os.path.join(BASE_DIR, "user_cred.json"))
     user_data = get_user_data(data.get("logged_user_id"))[0]
     return user_data["version_id"]
-
-
-
-
 
 def is_docker_installed_with_sudo():
     try:
@@ -36,16 +33,42 @@ def is_docker_installed_with_sudo():
         print("Docker command failed with sudo:", e.stderr.strip())
         return False
 
+def find_gcloud():
+    # 1. Check PATH
+    gcloud_path = shutil.which("gcloud")
+    print("GCLOUD Path: ", gcloud_path)
+    if gcloud_path:
+        return gcloud_path
+
+    # 2. Check common locations
+    common_paths = [
+        "/usr/local/google/cloud/sdk/bin/gcloud",
+        os.path.expanduser("~/google-cloud-sdk/bin/gcloud"),
+        "/snap/bin/gcloud",
+        "/usr/bin/gcloud",
+        "/usr/local/bin/gcloud"
+    ]
+    for path in common_paths:
+        if os.path.exists(path):
+            return path
+            
+    return None
 
 def authenticate_docker_with_service_account(json_key_path):
+    gcloud_executable = find_gcloud()
+    if not gcloud_executable:
+        print("❌ 'gcloud' command not found.")
+        print("Please install the Google Cloud SDK and ensure 'gcloud' is in your PATH or in a standard location.")
+        print("Installation instructions: https://cloud.google.com/sdk/docs/install")
+        raise FileNotFoundError("'gcloud' command not found. Please install the Google Cloud SDK.")
     try:
         print("🔐 Authenticating Docker with service account...")
         subprocess.run(
-            ["gcloud", "auth", "activate-service-account", "--key-file", json_key_path],
+            [gcloud_executable, "auth", "activate-service-account", "--key-file", json_key_path],
             check=True
         )
         subprocess.run(
-            ["gcloud", "auth", "configure-docker"],
+            [gcloud_executable, "auth", "configure-docker", "us-central1-docker.pkg.dev"],
             check=True
         )
         print("✅ Docker configured for authentication.")
@@ -126,13 +149,14 @@ def confirm_version_check():
         if not result:
             install_docker()
 
-        json_key_path = "movrs-read.json"
+        json_key_path = os.path.join(BASE_DIR, "movrs-read.json")
+        print("JSON KEY Present: ", json_key_path)
         authenticate_docker_with_service_account(json_key_path)
         update_docker_compose_file(os.path.join(BASE_DIR, 'docker-compose.yml'), docker_images)
         for key, value in docker_images.items():
             pull_image_with_sudo(value)
-        update_json_fields([["current_version",new_version]], os.path.join(BASE_DIR, "current_state.json"))
         run_docker_compose()
+        update_json_fields([["current_version",new_version]], os.path.join(BASE_DIR, "current_state.json"))
         print(new_version ,"current_version", current_version)
         return "Version needs to be updated"
 def create_env(user_home):
@@ -181,7 +205,4 @@ def update_docker_compose_file(file_path: str, docker_images: dict):
     with open(file_path, 'w') as f:
         yaml.dump(compose_data, f, sort_keys=False)
 
-
-print(confirm_version_check())
-
-
+print("Checking Version: ", confirm_version_check())

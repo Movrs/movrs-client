@@ -1,18 +1,10 @@
 import subprocess
 import os
-
-# Determine the base directory of the installed package
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_NAME = "movrs.command"
-SERVICE_FILE_PATH = os.path.join("/etc/systemd/system", SERVICE_NAME)
-
-import subprocess
-import os
 import shutil
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-SERVICE_NAME = "movrs.command"
+SERVICE_NAME = "movrs.service"
 SERVICE_FILE_PATH = os.path.join("/etc/systemd/system", SERVICE_NAME)
 
 def create_service_file():
@@ -30,9 +22,11 @@ After=network.target
 [Service]
 User=root
 Group=root
+Environment="DISPLAY=:0"
+Environment="QT_QPA_PLATFORM=xcb"
 Type=forking
-ExecStart={docker_path} compose -f {docker_compose_path} up -d
-ExecStop={docker_path} compose -f {docker_compose_path} down
+ExecStart=sudo docker-compose -f {docker_compose_path} up -d
+ExecStop=sudo docker-compose -f {docker_compose_path} down
 Restart=always
 
 [Install]
