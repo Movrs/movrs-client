@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: movrs-client
+Version: 0.1.7
+Summary: MOVRS Client GUI and CLI
+Author: Tariq Sarfraz
+Requires-Dist: PyQt6
+Requires-Dist: requests
+Requires-Dist: pyqt6_sip
+Requires-Dist: pyyaml
+Requires-Dist: requests

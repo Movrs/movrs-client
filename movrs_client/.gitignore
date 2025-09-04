@@ -2,3 +2,6 @@
 movrs-read.json
 current_state.json
 .setup_complete
+movrs-readonly.json
+current_state.json
+movrs-read.json

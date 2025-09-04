@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name="movrs-client",
-    version="0.1.6",
+    version="0.1.7",
     description="MOVRS Client GUI and CLI",
-    author="Tariq Sarfaraz",
+    author="Tariq Sarfraz",
     packages=find_packages(),
     install_requires=[
         "PyQt6",

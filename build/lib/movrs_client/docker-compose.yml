@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  backend:
+    image: us-central1-docker.pkg.dev/movrs-cloud-platform/movrs-core/movrs_backend:0.0.1
+    container_name: movrs_backend
+    runtime: nvidia
+    environment:
+    - DISPLAY=${DISPLAY}
+    volumes:
+    - /home:/home
+    - ${USER_HOME}/.config/theCaptury:/root/.config/theCaptury
+    - ${USER_HOME}/.local/share/Captury:/root/.local/share/Captury
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: all
+            capabilities:
+            - gpu
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash -c "python3 app.py"
+    ports:
+    - 13999:13999
+  frontend:
+    image: us-central1-docker.pkg.dev/movrs-cloud-platform/movrs-core/movrs_ui_base:0.0.1
+    container_name: movrs_ui_base
+    depends_on:
+    - backend
+    network_mode: host
+    volumes:
+    - /home:/home
+    - ${USER_HOME}/.config/theCaptury:/root/.config/theCaptury
+    - ${USER_HOME}/.local/share/Captury:/root/.local/share/Captury
+    ports:
+    - 13999:13999
+    - 6999:6999
+  magic_motion:
+    image: us-central1-docker.pkg.dev/movrs-cloud-platform/movrs-core/magic_motion_base:latest
+    container_name: movrs_magic_motion_app
+    runtime: nvidia
+    volumes:
+    - /home:/home
+    - ~/.config:/.config
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: all
+            capabilities:
+            - gpu
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash -c "python web_app.py"
