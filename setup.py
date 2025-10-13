@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="movrs-client",
-    version="0.1.8",
+    version="0.1.9",
     description="MOVRS Client GUI and CLI",
     author="Tariq Sarfraz",
     packages=find_packages(),
@@ -10,4 +10,3 @@ setup(
     entry_points={"console_scripts": ["movrs-client=movrs_client.app:main"]},
     include_package_data=True,
 )
-
