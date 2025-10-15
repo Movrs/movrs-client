@@ -192,6 +192,7 @@ def get_version_details():
 
 
 def update_to_version(new_version):
+    print(f"Updating to version {new_version}")
     data = read_json_file(os.path.join(BASE_DIR, "current_state.json"))
     current_version = data.get("current_version")
 

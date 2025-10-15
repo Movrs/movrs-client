@@ -1,16 +1,36 @@
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QProgressBar, QComboBox
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QProgressBar,
+    QComboBox,
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt, QTimer, QThread, pyqtSignal, QObject
-from movrs_client.movrs_apis import get_user_info, read_json_file, update_json_fields, run_docker_compose,stop_docker_compose
-from movrs_client.service_manager import create_service_file, enable_service, start_service, stop_service, disable_service
+from movrs_client.movrs_apis import (
+    get_user_info,
+    read_json_file,
+    update_json_fields,
+    run_docker_compose,
+    stop_docker_compose,
+)
+from movrs_client.service_manager import (
+    create_service_file,
+    enable_service,
+    start_service,
+    stop_service,
+    disable_service,
+)
 from movrs_client.app_updater import update_to_version, confirm_version_check
 import os
 
 # Determine the base directory of the installed package
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 print("BASE DIR", BASE_DIR)
+
 
 class UpdateWorker(QObject):
     finished = pyqtSignal(str)
@@ -38,21 +58,27 @@ class ControlPanel(QWidget):
         try:
             print(get_user_info())
             user_data = get_user_info()[0]
-            self.docker_process = ''
+            self.docker_process = ""
 
             self.setWindowTitle("Movrs Client")
             self.setGeometry(150, 150, 300, 250)
             self.setStyleSheet("background: #2E2E2E; color: white;")
 
-            self.setWindowFlags(self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint)
+            self.setWindowFlags(
+                self.windowFlags() & ~Qt.WindowType.WindowCloseButtonHint
+            )
 
             layout = QVBoxLayout()
 
-            self.welcome_label = QLabel("Welcome : " + self.get_user_display_name(user_data))
+            self.welcome_label = QLabel(
+                "Welcome : " + self.get_user_display_name(user_data)
+            )
             self.welcome_label.setFont(QFont("Arial", 14))
             self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-            self.version_label = QLabel("Select Version: " + user_data.get('version_id'))
+            self.version_label = QLabel(
+                "Select Version: " + user_data.get("version_id")
+            )
             self.version_label.setFont(QFont("Arial", 14))
             self.version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -80,10 +106,7 @@ class ControlPanel(QWidget):
             if self.version:
                 self.version_label.setText(f"Target Version: {self.version}")
                 self.start_update()
-            else:
-                self.start_update()
-
-        except: 
+        except:
             print("something went wrong")
 
     def start_update(self):
@@ -112,14 +135,15 @@ class ControlPanel(QWidget):
         state = data.get("state")
         if state == "":
             self.process_button.setText("Stop Process")
+            update_json_fields([["state", "running"]])
+            self.start_update()
             self.docker_process = run_docker_compose()
-            update_json_fields([['state', 'running']])
             create_service_file()
             enable_service()
             self.process_running = False
         else:
             stop_service()
-            update_json_fields([['state', '']])
+            update_json_fields([["state", ""]])
             self.process_button.setText("Start Process")
             self.process_running = True
 
@@ -130,11 +154,14 @@ class ControlPanel(QWidget):
         return user_data.get("displayName") or user_data.get("email")
 
     def logout(self):
-        update_json_fields([['state', '']])
-        update_json_fields([['logged_user_id', ''], ['email', ''], ['password', '']], os.path.join(BASE_DIR, "user_cred.json"))
+        update_json_fields([["state", ""]])
+        update_json_fields(
+            [["logged_user_id", ""], ["email", ""], ["password", ""]],
+            os.path.join(BASE_DIR, "user_cred.json"),
+        )
         if self.docker_process:
             self.docker_process.terminate()
-        self.docker_process = ''
+        self.docker_process = ""
         self.close()
         self.login_window.show()
 

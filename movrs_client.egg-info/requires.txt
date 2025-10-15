@@ -1,5 +1,0 @@
-PyQt6
-requests
-pyqt6_sip
-pyyaml
-requests
